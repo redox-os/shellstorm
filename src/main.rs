@@ -1,21 +1,14 @@
 extern crate rand;
 
 use rand::Rng;
-use std::{fs, io, path, process, time};
-
-fn bins() -> io::Result<Vec<path::PathBuf>> {
-    let mut paths = Vec::new();
-
-    for entry_res in fs::read_dir("/etc/shellstorm")? {
-        let entry = entry_res?;
-        paths.push(entry.path());
-    }
-
-    Ok(paths)
-}
+use std::{fs, process, time};
+use std::io::Read;
 
 fn main() {
-    let bins = bins().unwrap();
+    let mut config = String::new();
+    fs::File::open("/etc/shellstorm").unwrap().read_to_string(&mut config).unwrap();
+
+    let bins = config.lines().collect::<Vec<&str>>();
 
     let mut rng = rand::ChaChaRng::new_unseeded();
 
@@ -25,7 +18,7 @@ fn main() {
     loop {
         let i = rng.gen_range(0, bins.len());
         let bin = &bins[i];
-        eprintln!("shellstorm: {}", bin.display());
+        eprintln!("shellstorm: {}", bin);
         process::Command::new(bin).status().unwrap();
     }
 }
