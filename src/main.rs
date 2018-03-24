@@ -24,7 +24,6 @@ fn main() {
 
     loop {
         let i = rng.gen_range(0, bins.len());
-        let bin = bins[i];
-        process::Command::new(bin).status().unwrap();
+        process::Command::new(&bins[i]).status().unwrap();
     }
 }
