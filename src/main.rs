@@ -6,7 +6,7 @@ use std::{fs, io, path, process, time};
 fn bins() -> io::Result<Vec<path::PathBuf>> {
     let mut paths = Vec::new();
 
-    for entry_res in fs::read_dir("/bin")? {
+    for entry_res in fs::read_dir("/etc/shellstorm")? {
         let entry = entry_res?;
         paths.push(entry.path());
     }
@@ -24,6 +24,8 @@ fn main() {
 
     loop {
         let i = rng.gen_range(0, bins.len());
-        process::Command::new(&bins[i]).status().unwrap();
+        let bin = &bins[i];
+        eprintln!("shellstorm: {}", bin.display());
+        process::Command::new(bin).status().unwrap();
     }
 }
